@@ -8,7 +8,7 @@ import subprocess
 
 time.sleep(20)
 
-logging.basicConfig(filename = '/home/mikey/logs/auto_watch.log',level=logging.DEBUG,
+logging.basicConfig(filename = '~/logs/auto_watch.log', level=logging.DEBUG,
          format=' %(asctime)s - %(levelname)s - %(message)s')
 logging.disable(logging.DEBUG)
 
