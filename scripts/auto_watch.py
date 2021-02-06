@@ -50,7 +50,7 @@ def getkey():
     return key
 
 try:
-    font_path = "/home/mikey/Documents/Pi/nasalization-rg.ttf"
+    font_path = "~/auto_watch/nasalization-rg.ttf"
     text_size = 70
 
     text = PapirusTextPos(rotation=0)
