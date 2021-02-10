@@ -81,6 +81,11 @@ try:
             time.sleep(1)
         elif key == "shutdown":
             logging.info("shutting down")
+	    text.Clear()
+	    text.AddText("Bye :)", size=text_size, fontPath=font_path)
             subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
+            key = 'none'
+            time.sleep(10)
+
 except Exception as e:
     logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
