@@ -10,8 +10,8 @@ import sys
 from check_weather import get_sf_weather
 from get_transit import get_northbound_arrivals, get_southbound_arrivals
 
-time.sleep(20)
-if os.path.exists(r"~/logs/auto_watch.log"):
+time.sleep(3)
+if os.path.exists(r"/home/mikey/logs/auto_watch.log"):
     logging.basicConfig(filename=r'~/logs/auto_watch.log',
                         level=logging.INFO,
                         format=' %(asctime)s - %(levelname)s - %(message)s')
@@ -44,8 +44,9 @@ weather_button = Button(SW4, pull_up=False)
 button5 = Button(SW5, pull_up=False)
 
 def display_arivals(text, arrivals):
+    logging.info("arivals {}".format(arrivals))
     text.Clear()
-    for stop in sorted(n_transit.keys(), reverse=True):
+    for stop in sorted(arrivals.keys(), reverse=True):
         text1 = stop
         for route in arrivals[stop].keys():
             # truncating routes w/ long names, for bart with long ones
@@ -54,18 +55,18 @@ def display_arivals(text, arrivals):
             for arrival in arrivals[stop][route]:
                 text2 += " "
                 text2 += str(arrival)
-            text.AddText("{}\n{}".format(text1, text2), size=text_size, fontPath=font_path)
-            time.sleep(2)
+            text.AddText("{}\n{}".format(text1, text2), size=15, fontPath=font_path)
+            time.sleep(5)
             text.Clear()
 
 def setkey(device):
     global key
     pinnr = device.pin.number
-    if pinnr == SW1: key |= 'shutdown'
-    elif pinnr == SW2: key |= 'n_transit'
-    elif pinnr == SW3: key |= 's_transit'
-    elif pinnr == SW4: key |= 'weather'
-    elif pinnr == SW5: key |= 'button5'
+    if pinnr == SW1: key = 'shutdown'
+    elif pinnr == SW2: key = 'n_transit'
+    elif pinnr == SW3: key = 's_transit'
+    elif pinnr == SW4: key = 'weather'
+    elif pinnr == SW5: key = 'button5'
     else:
         key = 0
 
@@ -75,7 +76,7 @@ def getkey():
 
 try:
     key = 'none'
-    font_path = "~/pi_watch/nasalization-rg.ttf"
+    font_path = "/home/mikey/nasalization-rg.ttf"
     text_size = 70
 
     text = PapirusTextPos(rotation=0)
@@ -111,24 +112,26 @@ try:
             subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
             key = 'none'
             time.sleep(10)
-            # elif pinnr == SW2: key |= 'n_transit'
-            # elif pinnr == SW3: key |= 's_transit'
-            # elif pinnr == SW4: key |= 'weather'
         elif key == "n_transit":
             logging.info("getting n_transit")
             n_transit = get_northbound_arrivals(my_511_token=my_511_token)
             display_arivals(text, n_transit)
             key = 'none'
+            old_time = "fake time"
         elif key == "s_transit":
             logging.info("getting s_transit")
             s_transit = get_southbound_arrivals(my_511_token)
             display_arivals(text, s_transit)
             key = 'none'
+            old_time = "fake time"
         elif key == "weather":
             logging.info("getting weather")
             weather = get_sf_weather()
             text.Clear()
-            text.AddText(weather, size=text_size, fontPath=font_path)
+            text.AddText(weather, size=15, fontPath=font_path)
+            time.sleep(7)
+            key = 'none'
+            old_time = "fake time"
 
 except Exception as e:
     logging.fatal(e, exc_info=True)  # log exception info at FATAL log level

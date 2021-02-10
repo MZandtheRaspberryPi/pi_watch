@@ -25,7 +25,7 @@ def get_sf_weather():
     res.raise_for_status()
     logging.info("got response")
 
-    soupObject = bs4.BeautifulSoup(res.text)
+    soupObject = bs4.BeautifulSoup(res.text, features="html.parser")
     content = soupObject.find(id="detailed-forecast-body")
     content = content.select("div")
 
