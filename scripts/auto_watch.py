@@ -77,7 +77,7 @@ def getkey():
 try:
     key = 'none'
     font_path = "/home/mikey/nasalization-rg.ttf"
-    text_size = 70
+    text_size = 60
 
     text = PapirusTextPos(rotation=0)
     text.Clear()
@@ -133,7 +133,7 @@ try:
             time.sleep(7)
             key = 'none'
             old_time = "fake time"
-       elif key == "button5":
+        elif key == "button5":
             logging.info("button 5 pressed")
             key = 'none'
 
