@@ -10,3 +10,6 @@ sudo adduser mikey i2c
 
 enable i2c and spi
 https://github.com/PiSupply/PaPiRus
+
+for crontab
+python3 /home/mikey/Documents/pi_watch/scripts/auto_watch.py your511apikey
