@@ -5,12 +5,21 @@ import logging
 from gpiozero import Button
 import os
 import subprocess
+import sys
+
+from check_weather import get_sf_weather
+from get_transit import get_northbound_arrivals, get_southbound_arrivals
 
 time.sleep(20)
+if os.path.exists(r"~/logs/auto_watch.log"):
+    logging.basicConfig(filename=r'~/logs/auto_watch.log',
+                        level=logging.INFO,
+                        format=' %(asctime)s - %(levelname)s - %(message)s')
+else:
+    logging.basicConfig(level=logging.INFO,
+                        format=' %(asctime)s - %(levelname)s - %(message)s')
 
-logging.basicConfig(filename = '~/logs/auto_watch.log', level=logging.DEBUG,
-         format=' %(asctime)s - %(levelname)s - %(message)s')
-logging.disable(logging.DEBUG)
+my_511_token = sys.argv[1]
 
 # Defining EPD_SIZE
 EPD_SIZE = 2.0
@@ -29,19 +38,34 @@ SW4 = 19
 SW5 = 26
 
 shutdown_button = Button(SW1, pull_up=False)
-upButton = Button(SW2, pull_up=False)
-downButton = Button(SW3, pull_up=False)
-rightButton = Button(SW4, pull_up=False)
-exitButton = Button(SW5, pull_up=False)
+north_transit_button = Button(SW2, pull_up=False)
+south_transit_button = Button(SW3, pull_up=False)
+weather_button = Button(SW4, pull_up=False)
+button5 = Button(SW5, pull_up=False)
+
+def display_arivals(text, arrivals):
+    text.Clear()
+    for stop in sorted(n_transit.keys(), reverse=True):
+        text1 = stop
+        for route in arrivals[stop].keys():
+            # truncating routes w/ long names, for bart with long ones
+            text2 = (route[:5] + '.:') if len(route) > 5 else route + ":"
+            # appending arrival times for each route
+            for arrival in arrivals[stop][route]:
+                text2 += " "
+                text2 += str(arrival)
+            text.AddText("{}\n{}".format(text1, text2), size=text_size, fontPath=font_path)
+            time.sleep(2)
+            text.Clear()
 
 def setkey(device):
     global key
     pinnr = device.pin.number
-    if   pinnr == SW1: key |= shutdown
-    elif pinnr == SW2: key |= UP
-    elif pinnr == SW3: key |= DOWN
-    elif pinnr == SW4: key |= RIGHT
-    elif pinnr == SW5: key |= LEFT|UP
+    if pinnr == SW1: key |= 'shutdown'
+    elif pinnr == SW2: key |= 'n_transit'
+    elif pinnr == SW3: key |= 's_transit'
+    elif pinnr == SW4: key |= 'weather'
+    elif pinnr == SW5: key |= 'button5'
     else:
         key = 0
 
@@ -50,6 +74,7 @@ def getkey():
     return key
 
 try:
+    key = 'none'
     font_path = "~/pi_watch/nasalization-rg.ttf"
     text_size = 70
 
@@ -62,15 +87,15 @@ try:
     logging.info("Entering watch loop")
     while True:
         # Define button press action (Note: inverted logic w.r.t. gpiozero)
-        shutdown_button.when_released  = setkey
-        upButton.when_released    = setkey
-        downButton.when_released  = setkey
-        rightButton.when_released = setkey
-        exitButton.when_released = setkey
+        shutdown_button.when_released = setkey
+        north_transit_button.when_released = setkey
+        south_transit_button.when_released = setkey
+        weather_button.when_released = setkey
+        button5.when_released = setkey
 
         # check key
-        key = getKey()
-        if key == 0:
+        key = getkey()
+        if key == 'none':
             new_time = datetime.datetime.now().strftime("%H:%M")
             if old_time == new_time:
                 time.sleep(1)
@@ -81,11 +106,30 @@ try:
             time.sleep(1)
         elif key == "shutdown":
             logging.info("shutting down")
-	    text.Clear()
-	    text.AddText("Bye :)", size=text_size, fontPath=font_path)
+            text.Clear()
+            text.AddText("Bye :)", size=text_size, fontPath=font_path)
             subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
             key = 'none'
             time.sleep(10)
+            # elif pinnr == SW2: key |= 'n_transit'
+            # elif pinnr == SW3: key |= 's_transit'
+            # elif pinnr == SW4: key |= 'weather'
+        elif key == "n_transit":
+            logging.info("getting n_transit")
+            n_transit = get_northbound_arrivals(my_511_token=my_511_token)
+            display_arivals(text, n_transit)
+            key = 'none'
+        elif key == "s_transit":
+            logging.info("getting s_transit")
+            s_transit = get_southbound_arrivals(my_511_token)
+            display_arivals(text, s_transit)
+            key = 'none'
+        elif key == "weather":
+            logging.info("getting weather")
+            weather = get_sf_weather()
+            text.Clear()
+            text.AddText(weather, size=text_size, fontPath=font_path)
 
 except Exception as e:
     logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
+
