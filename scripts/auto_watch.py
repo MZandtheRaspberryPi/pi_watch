@@ -11,8 +11,8 @@ from check_weather import get_sf_weather
 from get_transit import get_northbound_arrivals, get_southbound_arrivals
 
 time.sleep(3)
-if os.path.exists(r"/home/mikey/logs/auto_watch.log"):
-    logging.basicConfig(filename=r'~/logs/auto_watch.log',
+if os.path.exists(r"/home/mikey/logs/watch.log"):
+    logging.basicConfig(filename=r'~/logs/watch.log',
                         level=logging.INFO,
                         format=' %(asctime)s - %(levelname)s - %(message)s')
 else:
@@ -109,6 +109,7 @@ try:
             logging.info("shutting down")
             text.Clear()
             text.AddText("Bye :)", size=text_size, fontPath=font_path)
+            time.sleep(2)
             subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
             key = 'none'
             time.sleep(10)
@@ -132,6 +133,9 @@ try:
             time.sleep(7)
             key = 'none'
             old_time = "fake time"
+       elif key == "button5":
+            logging.info("button 5 pressed")
+            key = 'none'
 
 except Exception as e:
     logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
