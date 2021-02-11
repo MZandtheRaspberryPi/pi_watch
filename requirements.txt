@@ -8,3 +8,4 @@ requests==2.25.1
 soupsieve==2.1
 urllib3==1.26.3
 unicornhat
+# papirus ensure you install this via github as per the README.md
