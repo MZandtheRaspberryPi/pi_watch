@@ -7,14 +7,6 @@ import requests
 import logging
 import os
 
-if os.path.exists(r"~/logs/check_weather_log.txt"):
-    logging.basicConfig(filename=r'~/logs/check_weather_log.txt',
-                        level=logging.INFO,
-                        format=' %(asctime)s - %(levelname)s - %(message)s')
-else:
-    logging.basicConfig(level=logging.INFO,
-                        format=' %(asctime)s - %(levelname)s - %(message)s')
-
 
 def get_sf_weather():
     logging.info("calling url")

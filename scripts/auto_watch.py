@@ -12,10 +12,18 @@ from get_transit import get_northbound_arrivals, get_southbound_arrivals
 
 time.sleep(3)
 if os.path.exists(r"/home/mikey/logs/watch.log"):
-    logging.basicConfig(filename=r'~/logs/watch.log',
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    logging.basicConfig(filename=r'/home/mikey/logs/watch.log',
                         level=logging.INFO,
-                        format=' %(asctime)s - %(levelname)s - %(message)s')
+                        format=' %(asctime)s - %(levelname)s - %(message)s',
+                        handlers=[ch])
+
 else:
+    print("not file watcher")
     logging.basicConfig(level=logging.INFO,
                         format=' %(asctime)s - %(levelname)s - %(message)s')
 
@@ -104,15 +112,19 @@ try:
             text.Clear()
             text.AddText(new_time, size=text_size, fontPath=font_path)
             old_time = new_time
-            time.sleep(1)
+            time.sleep(.3)
         elif key == "shutdown":
             logging.info("shutting down")
             text.Clear()
             text.AddText("Bye :)", size=text_size, fontPath=font_path)
             time.sleep(2)
-            subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
-            key = 'none'
-            time.sleep(10)
+            shutdown_path = __file__.split("/")[:-1]
+            shutdown_path = "/".join(shutdown_path)
+            # if started script manually, from the scripts directory, will see blank path to file
+            if shutdown_path == "":
+                shutdown_path = "."
+            subprocess.Popen(['sudo', '{}/shutdown.sh'.format(shutdown_path)])
+            sys.exit()
         elif key == "n_transit":
             logging.info("getting n_transit")
             n_transit = get_northbound_arrivals(my_511_token=my_511_token)
