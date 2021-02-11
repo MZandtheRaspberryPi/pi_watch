@@ -53,7 +53,7 @@ def display_arivals(text, arrivals):
     text.Clear()
     # example data
     # {'CivCtr': {'YL-N': [20, 50], 'RD-N': [12, 42], 'GN-N': [22, 37], 'BL-N': [2, 32]}, 'Missn&11': {'14R': [7, 13, 21], '14': [5, 7, 30]}}
-    arrival_str_miss = "Miss&11" + "\n"
+    arrival_str_miss = "Missn&11" + "\n"
     arrival_str_civ = 'CivCtr' + "\n"
     civ_ctr_arrivals = sorted(arrivals["CivCtr"].keys(), reverse=True)
     miss_arrivals = sorted(arrivals["Missn&11"].keys(), reverse=True)
