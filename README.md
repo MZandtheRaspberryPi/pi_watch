@@ -1,5 +1,5 @@
 # pi_watch
-A project to make a pi small enough to wear on your wrist as a watch. It can check buses near my apartment, show the weather, and turn off with button presses.    
+A project to make a pi small enough to wear on your wrist as a watch. It can check buses near my apartment, show the weather, and turn off with button presses. You can see a youtube video showing off the project [here](https://youtu.be/JhEXCvS3W6M).    
 ![pi_watch.gif](./pi_watch.gif)    
 
 I bought a watch case for the pi [here](https://uk.pi-supply.com/products/papirus-zero-case) and an e-ink display from papirus [here](https://uk.pi-supply.com/products/papirus-zero-epaper-screen-phat-pi-zero?_pos=5&_sid=d0eb9502c&_ss=r). The e-ink display has 5 buttons on it which is quite handy!    
