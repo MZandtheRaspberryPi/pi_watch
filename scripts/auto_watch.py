@@ -10,7 +10,7 @@ import sys
 from check_weather import get_sf_weather
 from get_transit import get_northbound_arrivals, get_southbound_arrivals
 
-time.sleep(3)
+time.sleep(15)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
