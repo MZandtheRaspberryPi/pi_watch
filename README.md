@@ -39,5 +39,35 @@ add this to the bottom:
 @reboot sudo python3 /home/jack/pi_watch/scripts/auto_watch.py your511apikey
 ```     
 
+## Adding your Phone's wifi hotspot as secondary network
+Thanks to this stack overflow post [here](https://raspberrypi.stackexchange.com/questions/58304/how-to-set-wifi-network-priority), the below shows the file to edit:
+```
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+```    
+
+And you can add your two networks wiht something like the below. Note that a higher number is a higher priority.
+```
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
+
+network={
+        ssid="network1"
+        scan_ssid=1
+        psk="password1"
+        key_mgmt=WPA-PSK
+        priority=2 # higher priority than 1
+}
+
+network={
+        ssid="network2"
+        scan_ssid=1
+        psk="password2!"
+        key_mgmt=WPA-PSK
+        priority=1 # lower priority than 2
+}
+
+```
+
 ## Notes on the Scripts
 I used 511 SF Bay’s Portal for Open Transit Data to get the buses in my hometown of San Francisco. You can find info on that API and how to create a token [here](https://511.org/open-data/transit). In the get_transit.py code I document some useful links to resources for finding stop ids and navigating the datastructure.    
