@@ -70,4 +70,18 @@ network={
 ```
 
 ## Notes on the Scripts
-I used 511 SF Bay’s Portal for Open Transit Data to get the buses in my hometown of San Francisco. You can find info on that API and how to create a token [here](https://511.org/open-data/transit). In the get_transit.py code I document some useful links to resources for finding stop ids and navigating the datastructure.    
+I used 511 SF Bay’s Portal for Open Transit Data to get the buses in my hometown of San Francisco. You can find info on that API and how to create a token [here](https://511.org/open-data/transit). In the get_transit.py code I document some useful links to resources for finding stop ids and navigating the datastructure. 
+
+## Troubleshooting
+If sometimes you start your pi and the auto watch script doesn't come on, redirect the output in the crontab to a log file. This will capture any errors on startup. If you see something like the below, it's likely device service isn't running when the papirus initializes, and you could fix it by adding a sleep to the top of the script. 20 seconds is probably long enough, as per: https://github.com/PiSupply/PaPiRus/issues/14
+```
+CRITICAL:root:[Errno 2] No such file or directory: '/dev/epd/version'
+Traceback (most recent call last):
+  File "/home/mikey/Documents/pi_watch/scripts/auto_watch.py", line 102, in <module>
+    text = PapirusTextPos(rotation=0)
+  File "/usr/local/lib/python3.5/dist-packages/papirus/textpos.py", line 25, in __init__
+    self.papirus = Papirus(rotation=rotation)
+  File "/usr/local/lib/python3.5/dist-packages/papirus/epd.py", line 83, in __init__
+    with open(os.path.join(self._epd_path, 'version')) as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/dev/epd/version'
+```
