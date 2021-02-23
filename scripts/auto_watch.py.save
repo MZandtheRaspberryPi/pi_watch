@@ -170,11 +170,10 @@ def main():
             elif key == "button5":
                 logger.info("button 5 pressed")
                 key = 'none'
-    except KeyboardInterrupt as e:
-        logger.exception("keyboard interupt caught", exc_info=e)
+
     except Exception as e:
-        logger.info("exception occured")
-        logger.exception("Exception occured", exc_info=e)
+        logging.fatal(e, exc_info=True)  # log exception info at FATAL log level
+        logging.exception(e)
 
 if __name__ == "__main__":
     main()
