@@ -46,7 +46,7 @@ Thanks to this stack overflow post [here](https://raspberrypi.stackexchange.com/
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
 ```    
 
-And you can add your two networks wiht something like the below. Note that a higher number is a higher priority.
+And you can add your two networks wiht something like the below. Note that a higher number is a higher priority. Also note I had to comment out any of my changes (to do static ip stuff) to /etc/dhcpcd.conf to get my pi to connect to my mobile hotspot.
 ```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
@@ -54,15 +54,15 @@ country=US
 
 network={
         ssid="network1"
-        scan_ssid=1
         psk="password1"
+        id_str="home"
         key_mgmt=WPA-PSK
         priority=2 # higher priority than 1
 }
 
 network={
         ssid="network2"
-        scan_ssid=1
+        id_str="mobile"
         psk="password2!"
         key_mgmt=WPA-PSK
         priority=1 # lower priority than 2
