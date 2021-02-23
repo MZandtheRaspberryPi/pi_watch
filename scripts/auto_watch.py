@@ -89,7 +89,8 @@ def main():
 
     my_511_token = sys.argv[1]
 
-    time.sleep(15)
+    # giving time for device service to startup, which is needed before init of Papirus
+    time.sleep(20)
 
     try:
         global key
@@ -114,7 +115,6 @@ def main():
 
         old_time = datetime.datetime.now().strftime("%H:%M")
         text.AddText(old_time, size=text_size, fontPath=font_path)
-        time.sleep(10)
         logger.info("Entering watch loop")
         while True:
             # Define button press action (Note: inverted logic w.r.t. gpiozero)
