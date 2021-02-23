@@ -34,9 +34,10 @@ From here you can edit your sudo crontab (if you're running command as sudo) and
 ```
 sudo crontab -e
 ```    
-add this to the bottom:
+add this to the bottom. Be sure to create the watch-cron_log.log file and put the path to it. This will get stderr redirected to it to help debug if stuff goes wrong.
 ```
-@reboot sudo python3 /home/jack/pi_watch/scripts/auto_watch.py your511apikey
+@reboot python3 /home/mikey/Documents/pi_watch/scripts/auto_watch.py your511apikey 2>> /home/jack/logs/watch_cron_log.log &
+
 ```     
 
 ## Adding your Phone's wifi hotspot as secondary network
